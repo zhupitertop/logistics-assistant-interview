@@ -32,7 +32,12 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <configuration><workingDirectory>${project.basedir}/..</workingDirectory></configuration>
+                <configuration>
+                    <workingDirectory>${project.basedir}/..</workingDirectory>
+                    <!-- Preload the already-vendored Mockito instrumentation agent;
+                         do not depend on dynamic self-attach in restricted/offline tests. -->
+                    <argLine>-Djava.net.preferIPv4Stack=true -javaagent:"${project.basedir}/../vendor/m2/net/bytebuddy/byte-buddy-agent/${byte-buddy.version}/byte-buddy-agent-${byte-buddy.version}.jar"</argLine>
+                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
