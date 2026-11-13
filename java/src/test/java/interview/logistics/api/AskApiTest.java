@@ -117,4 +117,13 @@ class AskApiTest {
         } finally { executor.shutdownNow(); }
     }
 
+    @Test
+    void givenInventoryFieldsAreNotReplacedByLegacySyntheticFields() throws Exception {
+        var response = mapper.readTree(request("盘点时发现账面数比实物多，我要记哪些信息"));
+        assertThat(response.get("answer").asText()).contains("商品编号", "仓库编号", "系统库存", "实盘数量")
+                .doesNotContain("商品编码", "复核人", "盘点人");
+        mvc.perform(get("/web/app.js")).andExpect(status().isOk());
+        mvc.perform(get("/web/style.css")).andExpect(status().isOk());
+    }
+
 }

@@ -1,24 +1,67 @@
 <!doctype html>
 <html lang="zh-CN">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>物流检索与异常排查助手</title>
-    <link rel="stylesheet" href="/web/style.css">
-    <script src="/web/app.js" defer></script>
-  </head>
-  <body>
-    <main>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>物流检索与异常排查助手</title>
+  <link rel="stylesheet" href="/style.css">
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <main>
+    <header class="page-header">
+      <p class="eyebrow">仓库作业助手 <span class="data-label">本地模拟数据</span></p>
       <h1>物流检索与异常排查助手</h1>
-      <form id="ask-form">
-        <label for="question">输入问题</label>
-        <textarea id="question" name="question" rows="3" required></textarea>
-        <button type="submit">提问</button>
+      <p class="intro">查询操作规范、订单进度，核对排查依据。</p>
+    </header>
+
+    <section class="panel" aria-labelledby="question-heading">
+      <h2 id="question-heading">描述你的问题</h2>
+      <form id="question-form" novalidate>
+        <label for="question">问题</label>
+        <textarea id="question" name="question" rows="4" required aria-describedby="question-help question-count"
+          placeholder="例如：HD202611001 怎么还没发出去，能确定卡在哪吗"></textarea>
+        <div class="input-footer">
+          <p id="question-help" class="muted">Enter 换行，Ctrl / ⌘ + Enter 提交。</p>
+          <p id="question-count" class="muted">0 / 2000 字</p>
+        </div>
+        <div class="form-actions">
+          <button id="submit-button" class="primary-button" type="submit">查询</button>
+          <p id="loading-status" class="muted" role="status" aria-live="polite"></p>
+        </div>
       </form>
-      <p id="status" role="status"></p>
-      <section aria-label="回答" id="answer"></section>
-      <section aria-label="引用" id="citations"></section>
-      <details><summary>工具调用记录</summary><ol id="trace"></ol></details>
-    </main>
-  </body>
+      <div class="examples" aria-label="填写示例问题">
+        <span class="muted">试试：</span>
+        <button type="button" data-question="盘点时发现账面数比实物多，我要记哪些信息">盘点记录</button>
+        <button type="button" data-question="HD202611002 现在是什么状态">订单状态</button>
+        <button type="button" data-question="HD202611001 怎么还没发出去，能确定卡在哪吗">未出库排查</button>
+      </div>
+      <p id="error-message" class="error-message" role="alert" tabindex="-1" hidden></p>
+    </section>
+
+    <section id="result" class="panel result-panel" aria-labelledby="result-heading" hidden>
+      <div class="result-header">
+        <h2 id="result-heading" tabindex="-1">查询结果</h2>
+        <span id="business-status" class="status-badge"></span>
+      </div>
+      <p class="question-label">本次问题</p>
+      <p id="answered-question" class="answered-question"></p>
+      <pre id="answer" class="answer"></pre>
+
+      <section class="citations-section" aria-labelledby="citations-heading">
+        <h2 id="citations-heading">引用依据 <span id="citation-count" class="count"></span></h2>
+        <p class="muted">摘录按回答中的序号排列，可逐条核对原文和检索命中编号。</p>
+        <p id="no-citations" class="muted" hidden>本次未使用 SOP 引用。</p>
+        <ol id="citations" class="citations-list"></ol>
+      </section>
+
+      <details id="trace-details" class="trace-section">
+        <summary>查看调用记录 <span id="trace-count" class="count"></span></summary>
+        <p class="muted">按实际执行顺序查看工具输入、结果和命中编号。</p>
+        <div id="trace-steps" class="trace-steps"></div>
+      </details>
+    </section>
+    <footer class="page-footer">模拟数据用于开发演示；订单状态本身不能确定异常原因。</footer>
+  </main>
+</body>
 </html>
