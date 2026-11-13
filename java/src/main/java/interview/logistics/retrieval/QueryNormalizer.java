@@ -11,7 +11,8 @@ import java.util.Set;
 import java.util.TreeMap;
 
 public final class QueryNormalizer {
-    private static final Set<String> QUESTION_WORDS = Set.of("什么", "哪些", "怎么", "如何", "是否", "请问", "一下", "现在", "一个", "我们", "我要");
+    private static final Set<String> QUESTION_WORDS = Set.of("什么", "哪些", "怎么", "如何", "是否", "请问", "一下", "现在", "一个", "我们", "我要",
+            "情况", "条件", "情形", "需要", "应该", "应当", "何时");
     private final Map<String, List<String>> synonyms;
     private final List<String> keys;
     private final TextAnalyzer analyzer = new TextAnalyzer();

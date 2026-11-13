@@ -9,8 +9,15 @@ public final class EvidenceRequirements {
     private static String canonical(String value) {
         return Normalizer.normalize(value, Normalizer.Form.NFKC).toLowerCase(Locale.ROOT);
     }
+    public static boolean asksTriggerCondition(String question) {
+        String q = canonical(question);
+        return q.matches("(?s).*(?:(?:什么|何种)(?:情况|条件|情形)|(?:什么时候|何时)\\s*(?>应该|应当|需要|应|需|须|要)(?!能|可以)).*");
+    }
     public static boolean asksDuration(String question) {
-        return canonical(question).matches("(?s).*(?:什么时候|何时|多久|多长时间|几天|几小时|预计).*");
+        String q = canonical(question);
+        // A mixed question still requires elapsed-time evidence even if it also asks a trigger.
+        if (q.matches("(?s).*(?:多久|多长时间|几天|几小时|预计|日期|几点|几月|哪天|何日).*")) return true;
+        return q.matches("(?s).*(?:什么时候|何时).*") && !asksTriggerCondition(q);
     }
     public static boolean asksNumericLimit(String question) {
         return canonical(question).matches("(?s).*(?:上限|下限|(?:最多|至少|允许|可以|能).{0,8}(?:几件|多少件)|(?:金额|运费|费用|价格|温度|湿度|重量).{0,12}(?:多少|几)).*");

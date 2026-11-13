@@ -44,4 +44,11 @@ class QueryNormalizerTest {
         }
         assertThat(normalizer.normalize("天文学").original()).isEqualTo("天文学");
     }
+    @Test
+    void genericQuestionPhrasesCannotOutweighTheRequestedAction() {
+        var query = new QueryNormalizer(Map.of()).normalize("盘点什么情况下需要复盘");
+        assertThat(query.termWeights()).doesNotContainKeys("情况", "需要").containsKeys("盘点", "复盘");
+        assertThat(query.normalized()).contains("什么情况下需要");
+    }
+
 }

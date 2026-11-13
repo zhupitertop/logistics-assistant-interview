@@ -190,4 +190,19 @@ class AskApiTest {
         assertThat(warehouse.get("trace").findValuesAsText("tool")).containsExactly("order_query", "generate");
     }
 
+    @Test
+    void proceduralWhenQuestionsUseTriggerConditionsWithoutInventingAnEta() throws Exception {
+        for (String question : List.of("盘点时，什么时候应该复盘", "盘点何时需要复盘", "盘点什么情况下需要复盘")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("answered");
+            assertThat(response.get("answer").asText()).contains("初盘出现账实差异时", "第二名盘点人员", "初盘数和复盘数");
+            assertThat(response.get("citations").findValuesAsText("id")).containsOnly("INV-04");
+        }
+        for (String question : List.of("盘点复盘需要几小时", "盘点什么时候应该复盘，预计要多久", "HD202611001 什么时候能发货")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("insufficient_evidence");
+            assertThat(response.get("citations").isEmpty()).isTrue();
+        }
+    }
+
 }

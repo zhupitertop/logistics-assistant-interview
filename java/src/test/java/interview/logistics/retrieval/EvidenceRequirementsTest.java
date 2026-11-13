@@ -14,4 +14,15 @@ class EvidenceRequirementsTest {
             assertThat(EvidenceRequirements.asksUnavailableOrderField(question)).as(question).isFalse();
         }
     }
+    @Test
+    void triggerConditionsAreNotDurationsButMixedQuestionsStillNeedTimeEvidence() {
+        for (String question : List.of("什么时候应该复盘", "何时需要复盘", "什么情况下需要复盘")) {
+            assertThat(EvidenceRequirements.asksDuration(question)).as(question).isFalse();
+        }
+        for (String question : List.of("什么时候能发货", "何时送到", "什么时候应该能发货", "复盘需要几小时", "什么时候应该复盘，预计要多久")) {
+            assertThat(EvidenceRequirements.asksDuration(question)).as(question).isTrue();
+            assertThat(EvidenceRequirements.supports(question, "初盘出现账实差异时，由第二名盘点人员复盘。")).isFalse();
+        }
+    }
+
 }
