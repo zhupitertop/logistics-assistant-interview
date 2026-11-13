@@ -72,4 +72,19 @@ class SopSearchServiceTest {
         assertThat(results).extracting(SopEntry::id).containsExactly("ZZZ-99");
     }
 
+    @Test
+    void quantityRegistrationRequiresMismatchContextIndependentOfClauseIds() {
+        var snapshot = new DataSnapshot(Path.of("data"), Map.of(
+                "AAA-01", new SopEntry("AAA-01", "库存盘点规范", "盘点期间如需移动货物，登记原库位、目标库位、移动数量和时间。"),
+                "ZZZ-99", new SopEntry("ZZZ-99", "库存盘点规范", "盘点发现系统库存与实物数量有差异时，记录商品编号、仓库编号、系统库存和实盘数量。")),
+                Map.of(), Map.of("登记", List.of("记录")), Map.of("sop.json", "s", "synonyms.json", "q"));
+        var tool = new SopSearchService(snapshot, new IndexBuilder().build(snapshot));
+        assertThat(tool.searchSop("盘点少了两件该登记什么")).extracting(SopEntry::id).containsExactly("ZZZ-99");
+        assertThat(tool.searchSop("盘点移动货物要登记哪些库位")).first().extracting(SopEntry::id).isEqualTo("AAA-01");
+        var onlyMovement = new DataSnapshot(Path.of("data"), Map.of("AAA-01", snapshot.sops().get("AAA-01")),
+                Map.of(), snapshot.synonyms(), snapshot.sourceHashes());
+        assertThat(new SopSearchService(onlyMovement, new IndexBuilder().build(onlyMovement))
+                .searchSop("盘点少了两件该登记什么")).isEmpty();
+    }
+
 }

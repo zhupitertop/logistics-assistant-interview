@@ -41,9 +41,19 @@ public final class EvidenceRequirements {
     public static boolean requiresMoreThanStatus(String question) {
         return asksDuration(question) || asksNumericLimit(question) || asksIncidentAttribution(question) || asksUnavailableOrderField(question);
     }
+    public static boolean asksQuantityRegistration(String question) {
+        String q = canonical(question);
+        boolean registration = q.matches("(?s).*(?:记录|登记|要记|记哪些|写哪些).*");
+        boolean mismatch = q.matches("(?s).*(?:少件|短少|少了|多件|多了|数量不符|数量差异|账实不符|盘点差异|实拣差异"
+                + "|退货差异|到货差异|应收|实收|应拣|实拣|申退|实退|账面|实盘|收少|多收|多退|退少|盘亏|盘盈).*");
+        return registration && mismatch;
+    }
     public static boolean supports(String question, String sourceText) {
         // A normative corpus plus order progress fields contains no incident investigation dossier.
         if (asksIncidentAttribution(question)) return false;
+        // A shared recording verb is not evidence about a quantity discrepancy.
+        if (asksQuantityRegistration(question) && !sourceText.matches(
+                "(?s).*(?:差异|不符|不一致|短少|少于|多于|超过|超收|超拣|超退|短收|溢收).*") ) return false;
         if (asksDuration(question) && !sourceText.matches("(?s).*(?:[0-9]+|[一二三四五六七八九十百]+)\\s*(?:分钟|小时|工作日|天|周).*") ) return false;
         if (asksNumericLimit(question) && !sourceText.matches("(?s).*[0-9]+(?:\\.[0-9]+)?\\s*(?:元|件|度|℃|%|％|公斤|千克|吨).*") ) return false;
         return true;

@@ -25,4 +25,13 @@ class EvidenceRequirementsTest {
         }
     }
 
+    @Test
+    void recordingAnUnrelatedQuantityDoesNotEstablishDiscrepancyEvidence() {
+        String question = "盘点少了两件该登记什么";
+        assertThat(EvidenceRequirements.asksQuantityRegistration(question)).isTrue();
+        assertThat(EvidenceRequirements.supports(question, "盘点期间移动货物时登记移动数量、库位和时间。")).isFalse();
+        assertThat(EvidenceRequirements.supports(question, "盘点数量有差异时记录系统库存和实盘数量。")).isTrue();
+        assertThat(EvidenceRequirements.asksQuantityRegistration("盘点移动货物要登记哪些库位")).isFalse();
+    }
+
 }

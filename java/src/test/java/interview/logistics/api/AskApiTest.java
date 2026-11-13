@@ -205,4 +205,16 @@ class AskApiTest {
         }
     }
 
+    @Test
+    void shortageRegistrationUsesMismatchEvidenceInsteadOfUnrelatedMovementRecords() throws Exception {
+        for (String question : List.of("我是在做盘点，不是收货，少了两件该登记什么", "盘点少了两件要登记哪些信息",
+                "清库点数发现数量短少，怎么登记")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("answered");
+            assertThat(response.get("citations").findValuesAsText("id")).containsOnly("INV-01");
+            assertThat(response.get("answer").asText()).contains("商品编号", "仓库编号", "系统库存", "实盘数量")
+                    .doesNotContain("目标库位", "移动数量");
+        }
+    }
+
 }
