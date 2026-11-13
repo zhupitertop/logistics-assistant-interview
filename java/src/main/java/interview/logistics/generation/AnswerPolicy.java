@@ -34,6 +34,7 @@ final class AnswerPolicy {
                 case "missing_order_id" -> "请提供需要查询的订单号。";
                 case "multiple_orders" -> "请明确本次要查询的一票订单。";
                 case "invalid_order_id" -> "请核对并提供完整订单号。";
+                case "order_detail_not_available" -> "现有订单字段不包含所需明细，需要补充相应业务记录。";
                 case "unsupported_order_status" -> "缺少适用于该状态的排查规则。";
                 case "status_workflow_conflict" -> "已知订单状态与所问流程不一致，需要补充相应记录核实。";
                 case "ambiguous_workflow", "workflow_required" -> "请明确是入库、盘点、出库实拣还是退货等具体流程。";

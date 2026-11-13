@@ -1,34 +1,86 @@
 # 物流检索与异常排查助手
 
-四小时 AI 应用工程面试。实现一个本地助手，用自然语言查询订单状态和仓库 SOP，并展示引用与工具调用记录。前 215 分钟开发，最后 25 分钟走查。
+本分支以原始仓库的给定数据为准，迁入已实现的 Java 17、Spring Boot 3.2.12 后端与原生 JavaScript 前端。完整实现位于 `feature/assistant`；`main` 和原始标签保持供审查。
 
-## 开始
+## 启动与测试
+
+准备 JDK 17，在仓库根目录执行：
 
 ```bash
-git clone https://github.com/ArtLjn/logistics-assistant-interview.git
-cd logistics-assistant-interview
-git switch -c feature/assistant exam-base
-git merge --ff-only origin/exam-conflict
+bash scripts/run java start
+bash scripts/run java test
 ```
 
-从 [Releases](https://github.com/ArtLjn/logistics-assistant-interview/releases/latest) 下载 `offline-deps.tar.gz` 并在仓库根目录执行 `tar -xzf offline-deps.tar.gz`。验收前请准备好 Git、Bash 和所选运行时。Windows 可用 WSL。
+默认地址为 <http://127.0.0.1:8000/>。启动与测试使用已随仓库预置的 Maven 3.9.16 和 `vendor/m2`，不需下载 Release、不使用个人 Maven 缓存。默认 `AGENT_LLM=off`。其他系统若未设置 JAVA_HOME，请将其指向 JDK 17。
 
-| 二选一 | 启动 | 测试 |
-| --- | --- | --- |
-| Python 3.11 + FastAPI | `bash scripts/run python start` | `bash scripts/run python test` |
-| Java 17 + Maven 3.9 + Spring Boot 3.2 | `bash scripts/run java start` | `bash scripts/run java test` |
+索引删除或原始 SOP / 同义词改变后，一条命令重建：
 
-打开 [本地页面](http://127.0.0.1:8000/)。脚手架提供静态页面和 `/ask` 占位（HTTP 501），初始测试只验证脚手架。默认 `AGENT_LLM=off`。
+```bash
+bash scripts/run java rebuild-index
+```
+
+索引已提交到 `index/sop-index.json`。无效、缺失或过期索引会阻止启动并给出重建提示。新依赖只在明确的联网准备命令 `./scripts/prepare-offline.sh` 中获取；正常启动、测试、重建均为离线模式。
+
+## 请求示例
 
 ```bash
 curl -sS http://127.0.0.1:8000/ask \
   -H 'Content-Type: application/json' \
-  -d '{"question":"HD202611002 现在是什么状态"}'
+  -d '{"question":"HD202611001 怎么还没发出去，能确定卡在哪吗"}'
 ```
 
-## 发放资料
+`POST /ask` 只接收非空字符串 question。业务结果 HTTP 200，以 answered、order_not_found、insufficient_evidence 区分；参数、类型和非法 JSON 返回 400。响应包含原文回答、连续摘录和按执行顺序递增的 trace。纯状态不检索 SOP，最终 generate 只组织回答。
 
-- [完整题面和 Git 提交流程](docs/assignment.md)
-- [API 契约](docs/api.md)
-- [模拟数据与字段说明](data/README.md)
-- [五条公开验收用例](docs/public-cases.md)
+## 检索链路
+
+1. **建立索引。** 一条给定 SOP 对应一条索引文档。按统一的汉字二元组与英数字分析器保存标题/正文词频、词项长度和倒排表，不复制另一份全文，不索引订单。元数据包含源文件 SHA-256 和分析/评分版本。
+2. **召回。** 保留原问题，同义词最长匹配、单轮扩展；原词权重 1，扩展词 0.5。只访问匹配词项的倒排项。显式业务流程优先于泛化同义词，不把“少件”统一当作入库。
+3. **排序。** Java 进程内 BM25，k1=1.2、b=0.75、标题词频权重 2。按业务流程、数量方向与所需事实类型过滤，再选最多十条候选、三条有效命中；同分稳定排序。没有 Elasticsearch 或模型服务。
+
+原始语料的出库与实拣共用 OUT 编号，不能按编号硬分组；通用标题下需检查正文中的实拣/应拣业务表达。排查不能用纯状态定义顶替；时效、数值限额、事件归责和订单明细问题需要相应证据，不能借相近流程冒充答案。
+
+## 回答与模型开关
+
+AGENT_LLM 默认及显式 off 都使用固定模板，不连接外部模型。其他模式当前明确拒绝启动。生成器只能访问本次证据，逐字引用主命中条款的完整正文；长条款拆为不超过 120 个 Unicode 码点的连续摘录，保留全部条件与否定语。引用必须出现在本次 sop_search.hit_ids，generate.hit_ids 只记录实际使用的条款。
+
+订单按完整单号精确查找，保留实际状态和仓库；状态不能确认库存、任务或承运商原因，排查回答明确原因待核实。没有足够依据时返回“现有数据无法确认”。程序内部证据校验失败返回 500，不伪装成正常业务回答。
+
+## 实际误判调优与代码复核
+
+迁移初期，排查公开用例把纯状态定义 ST-01 作为主依据，未引用 OUT-02。原因是词面相关性高，但没有可执行排查动作。修正为通用事实维度检查：请求排查时，纯定义条款不能替代核查/确认/记录等处理依据。没有按 OUT-02 编号加分；使用变更编号的测试验证内容驱动召回。
+
+亲自复核并修正的生成代码包括：原加载器只支持三至四字母 SOP 编号，误拒原始 IN/ST；旧测试还假设盘点字段为商品编码、库位和复核人。现已兼容原始编号和字符串同义词，回答严格使用原文“商品编号、仓库编号、系统库存和实盘数量”，并增加禁止旧模拟字段混入的 HTTP 回归。
+
+严格验收又发现时长、温度上限等未知事实可能被相关流程替代，现增加所需事实类型检查，并将时间/明细问题从纯状态路径移入证据核查。详细结果见验收记录。
+
+## 上游合并与数据来源
+
+从原始 exam-base（75cd774）创建功能分支，快进 origin/exam-conflict（3c5f8b2），完成六次单一目的迁移提交后合入 origin/main（1579b1b）。实际 SOP 冲突保留候选侧 TRA-02 字段顺序与上游新增句子；合并提交为 5f1e725，随后重建索引并复测。
+
+给定 SOP 的全部 47 条业务内容与上游 main 一致，订单文件与上游 main 字节一致，含五条订单；没有把旧项目模拟 SOP 覆盖进来。原四条同义词样例保持原值，仅扩充业务用语。原 LICENSE、题面、API 契约、公开用例和未选用的 Python 脚手架均保留。Python 不参与本分支启动或测试。
+
+## 工程与前端
+
+保留原始 `java/pom.xml` 与 `interview.logistics.ExamApplication` 入口。IDEA 可导入 java/pom.xml，JDK 选择 17；直接运行主类时工作目录设为仓库根目录。
+
+前端只在原有 web 三文件中实现，支持输入、原文回答、逐条引用核对、trace 折叠、加载、错误、超时、重复提交保护和刷新后提问。静态文件既支持 /app.js、/style.css，也兼容 /web/app.js、/web/style.css。无前端框架、无构建工具、无 CDN；开发期 DOM 验证工具不属于运行依赖。
+
+额外检索与编排调试：
+
+```bash
+./scripts/search-sop.sh '盘点时发现账面数比实物多，我要记哪些信息'
+./scripts/collect-evidence.sh 'HD202611005 异常升级前需要记录最后有效扫描站点吗'
+```
+
+## 原始资料与验证
+
+- [原始题面](docs/assignment.md)
+- [原始 API 契约](docs/api.md)
+- [原始公开用例](docs/public-cases.md)
+- [原始数据说明](data/README.md)
+- [迁移记录](docs/migration.md)
+- [严格验收记录](docs/acceptance.md)
+
+## 已知限制
+
+仅支持单轮、单票订单，规则消歧不能完全理解复杂否定、代词或跨流程比较。答案保留完整主条款，不做自由摘要。所需事实类型筛选是保守规则，不是对任意未来语料的完整语义证明。隐藏十条问法不可获得，不宣称已通过或达到满分。仅支持模型 off；未连接 WMS、云数据库或物流平台。

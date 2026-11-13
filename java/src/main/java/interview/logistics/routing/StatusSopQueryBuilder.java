@@ -2,6 +2,7 @@ package interview.logistics.routing;
 
 import interview.logistics.order.OrderQueryResult;
 import interview.logistics.retrieval.QueryNormalizer;
+import interview.logistics.retrieval.EvidenceRequirements;
 import interview.logistics.retrieval.WorkflowPolicy;
 import java.util.Map;
 import java.util.Set;
@@ -18,6 +19,7 @@ public final class StatusSopQueryBuilder {
             case "运输异常" -> Set.of(WorkflowPolicy.Workflow.TRANSPORT);
             default -> Set.of();
         };
+        if (EvidenceRequirements.asksUnavailableOrderField(question)) return new Decision(null, "order_detail_not_available");
         if (allowed.isEmpty()) return new Decision(null, "unsupported_order_status");
         String problem = QuestionRouter.withoutOrderIds(question).strip();
         if (!problem.isEmpty()) {

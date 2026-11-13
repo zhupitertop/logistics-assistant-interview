@@ -1,6 +1,7 @@
 package interview.logistics.routing;
 
 import java.text.Normalizer;
+import interview.logistics.retrieval.EvidenceRequirements;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Locale;
@@ -11,7 +12,7 @@ public final class QuestionRouter {
     // Preserve the matched key exactly; accepting a lowercase spelling does not make it a known order.
     private static final Pattern ORDER = Pattern.compile("(?i)(?<![a-z0-9])HD[0-9]{9}(?![a-z0-9])");
     private static final Pattern ORDER_LIKE = Pattern.compile("(?iu)[hｈ][dｄ][0-9０-９]+");
-    private static final List<String> DIAGNOSIS = List.of("为什么", "为何", "怎么还", "还没", "卡在", "卡住", "卡哪", "原因", "排查", "核查", "核对", "怎么处理", "怎么办", "如何处理", "能确定", "没发", "未出", "处理步骤");
+    private static final List<String> DIAGNOSIS = List.of("为什么", "为何", "怎么还", "还没", "卡在", "卡住", "卡哪", "原因", "造成", "导致", "排查", "核查", "核对", "怎么处理", "怎么办", "如何处理", "能确定", "没发", "未出", "处理步骤");
     private static final List<String> PROCESS = List.of("流程", "规范", "步骤", "怎么做", "如何操作", "记录", "要记", "盘点", "入库", "拣货", "捡货", "实拣", "退货");
 
     public RoutingPlan route(String question) {
@@ -29,7 +30,7 @@ public final class QuestionRouter {
         String text = Normalizer.normalize(withoutIds, Normalizer.Form.NFKC).toLowerCase(Locale.ROOT);
         if (ids.size() == 1) {
             String id = ids.iterator().next();
-            return new RoutingPlan(contains(text, DIAGNOSIS) || contains(text, PROCESS) ? ORDER_DIAGNOSIS : ORDER_STATUS,
+            return new RoutingPlan(contains(text, DIAGNOSIS) || contains(text, PROCESS) || EvidenceRequirements.requiresMoreThanStatus(text) ? ORDER_DIAGNOSIS : ORDER_STATUS,
                     id, "single_order");
         }
         boolean general = contains(text, List.of("一般", "通常", "通用", "流程", "规范", "步骤", "怎么操作")) || contains(text, PROCESS);

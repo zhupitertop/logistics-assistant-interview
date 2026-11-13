@@ -154,4 +154,24 @@ class AskApiTest {
         assertThat(response.get("trace").get(2).get("hit_ids").toString()).contains("TRA-02");
     }
 
+    @Test
+    void unsupportedFactTypesDoNotBorrowNearbyProcedureClauses() throws Exception {
+        for (String question : List.of("盘点差异是谁偷走了货物", "HD202611001 什么时候能发货，预计几天", "运输异常多久能够恢复",
+                "入库差异冷链温度上限是多少度", "退货数量不符最多可以少几件", "HD202611005 最后有效扫描站点在哪里",
+                "HD202611001 承运商是谁", "HD202611001 运费是多少")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("insufficient_evidence");
+            assertThat(response.get("answer").asText()).contains("现有数据无法确认");
+            assertThat(response.get("citations").size()).isZero();
+        }
+    }
+
+    @Test
+    void suspectedInventoryCauseInvokesInvestigationRatherThanOnlyReadingStatus() throws Exception {
+        var response = mapper.readTree(request("HD202611001 是库存不足造成的吗"));
+        assertThat(response.get("answer").asText()).contains("已审核待出库", "具体原因待核实");
+        assertThat(response.get("trace").get(1).get("tool").asText()).isEqualTo("sop_search");
+        assertThat(response.get("answer").asText()).doesNotContain("原因是库存不足", "确定是库存不足");
+    }
+
 }

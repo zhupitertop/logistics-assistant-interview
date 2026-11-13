@@ -65,7 +65,8 @@ public final class SopSearchService {
     private boolean supports(NormalizedQuery query, Bm25Ranker.Candidate candidate) {
         String question = query.normalized() + " " + String.join(" ", query.expansions());
         String text = data.sops().get(candidate.id()).text();
-        if (question.matches("(?s).*(?:为什么|为何|怎么还|卡在哪|卡住|原因|排查|核查|怎么办|怎么处理|如何处理|如何操作|怎么做).*")
+        if (!EvidenceRequirements.supports(question, text)) return false;
+        if (question.matches("(?s).*(?:为什么|为何|怎么还|卡在哪|卡住|原因|造成|导致|排查|核查|怎么办|怎么处理|如何处理|如何操作|怎么做).*")
                 && !text.matches("(?s).*(?:核对|确认|核实|检查|记录|登记|暂停|联系|提交|复核|复盘|查看|隔离|拍照|提报|清点).*") ) {
             return false; // A progress definition alone cannot supply handling steps.
         }

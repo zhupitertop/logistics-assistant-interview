@@ -1,7 +1,7 @@
 {
   "schemaVersion" : 1,
   "tokenizerVersion" : "han-bigram-latin-token-v1",
-  "rankingConfigVersion" : "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-original-flow-action-v4",
+  "rankingConfigVersion" : "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-original-flow-action-facts-v5",
   "sopSha256" : "789e398c256e494a616956b54a74467d35a132e2af1c9ad099f00af966dc410c",
   "synonymsSha256" : "4acaef6d00344e28da713e0bc2b7cf83e8ea1920a8ea8d768833c9086484e62c",
   "documentCount" : 47,
