@@ -62,4 +62,14 @@ class SopSearchServiceTest {
         } finally { executor.shutdownNow(); }
         assertThat(new SopSearchService(data, new IndexBuilder().build(data)).search(first)).isEqualTo(expectedFirst);
     }
+    @Test
+    void pureStateDefinitionsCannotReplaceInvestigationSteps() {
+        var snapshot = new DataSnapshot(Path.of("data"), Map.of(
+                "AAA-01", new SopEntry("AAA-01", "订单状态说明", "已审核待出库指已经审核通过但尚未出库。已出库指已完成出库流程。"),
+                "ZZZ-99", new SopEntry("ZZZ-99", "订单出库规范", "已审核待出库时，先核对作业任务，再确认可用库存。")),
+                Map.of(), Map.of(), Map.of("sop.json", "s", "synonyms.json", "q"));
+        var results = new SopSearchService(snapshot, new IndexBuilder().build(snapshot)).searchSop("已审核待出库为什么还没发");
+        assertThat(results).extracting(SopEntry::id).containsExactly("ZZZ-99");
+    }
+
 }
