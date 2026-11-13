@@ -34,4 +34,12 @@ class EvidenceRequirementsTest {
         assertThat(EvidenceRequirements.asksQuantityRegistration("盘点移动货物要登记哪些库位")).isFalse();
     }
 
+    @Test
+    void proceduralLookupStillNeedsEvidenceForTheRequestedField() {
+        assertThat(EvidenceRequirements.requiresMoreThanStatus("怎么查收件人电话")).isTrue();
+        assertThat(EvidenceRequirements.supports("如何核对收件人电话", "已审核待出库时先核对库存和作业任务。")).isFalse();
+        assertThat(EvidenceRequirements.supports("如何核对收件人电话", "核对收件人联系方式并记录核实结果。")).isTrue();
+        assertThat(EvidenceRequirements.supports("如何核对承运商", "向承运人核实并记录结果。")).isTrue();
+    }
+
 }

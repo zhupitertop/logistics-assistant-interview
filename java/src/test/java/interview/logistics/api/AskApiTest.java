@@ -217,4 +217,16 @@ class AskApiTest {
         }
     }
 
+    @Test
+    void proceduralDetailRequestsCannotFallBackToStatusOrUnrelatedSop() throws Exception {
+        for (String question : List.of("HD202611001 怎么查收件人电话", "HD202611001 如何查询收件人手机号",
+                "HD202611001 需要记录收件人电话吗")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("insufficient_evidence");
+            assertThat(response.get("answer").asText()).contains("现有数据无法确认");
+            assertThat(response.get("citations").isEmpty()).isTrue();
+            assertThat(response.get("trace").findValuesAsText("tool")).containsExactly("order_query", "sop_search", "generate");
+        }
+    }
+
 }

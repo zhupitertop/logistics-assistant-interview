@@ -2,10 +2,18 @@ package interview.logistics.retrieval;
 
 import java.text.Normalizer;
 import java.util.Locale;
+import java.util.List;
 
 /** Requested fact types, not mappings from questions to clauses or answers. */
 public final class EvidenceRequirements {
     private EvidenceRequirements() {}
+    // Field aliases describe evidence facets; they never name a clause or supply a field value.
+    private static final List<List<String>> DETAIL_TOPICS = List.of(
+            List.of("电话", "手机号", "联系方式"), List.of("收货地址", "收件地址", "仓库地址"),
+            List.of("城市", "当前位置", "实际位置", "目前位置", "目前去向"),
+            List.of("承运商", "承运人"), List.of("运单号", "物流单号"), List.of("收货人", "收件人"),
+            List.of("商品明细"), List.of("任务号"), List.of("负责人", "处理人"),
+            List.of("扫描站点", "扫描时间"), List.of("签收时间"));
     private static String canonical(String value) {
         return Normalizer.normalize(value, Normalizer.Form.NFKC).toLowerCase(Locale.ROOT);
     }
@@ -30,16 +38,19 @@ public final class EvidenceRequirements {
         // Modal words alone (e.g. "需要知道电话") do not turn a factual request into a procedure.
         boolean procedure = q.matches("(?s).*(?:(?:怎么|如何).{0,8}(?:查询|查|联系|记录|登记|核对|核查|处理)"
                 + "|(?:应该|应当|需要|须|要).{0,6}(?:记录|登记|核对|核查|确认|处理)|规范|流程|步骤|要记).*");
+        return !procedure && mentionsOrderDetail(q);
+    }
+    private static boolean mentionsOrderDetail(String q) {
         boolean missingField = q.matches("(?s).*(?:承运商|承运人|运单号|物流单号|收货人|收件人|收货地址|收件地址|仓库地址"
                 + "|电话|手机号|联系方式|商品明细|任务号|负责人|处理人|扫描站点|签收时间).*");
         boolean physicalLocation = q.matches("(?s).*(?:所在城市|当前位置|实际位置|目前位置|目前去向|到(?:哪个|哪座|什么)城市"
                 + "|(?:货物|货|包裹).{0,6}(?:在哪里|在哪儿|在哪个地方)).*");
         boolean currentStock = q.matches("(?s).*(?:(?:还有|有没有|是否有|有无|剩余|剩下|当前|实际|可用).{0,4}库存"
                 + "|库存.{0,5}(?:多少|够不够|充足|足够|有吗)).*");
-        return !procedure && (missingField || physicalLocation || currentStock);
+        return missingField || physicalLocation || currentStock;
     }
     public static boolean requiresMoreThanStatus(String question) {
-        return asksDuration(question) || asksNumericLimit(question) || asksIncidentAttribution(question) || asksUnavailableOrderField(question);
+        return asksDuration(question) || asksNumericLimit(question) || asksIncidentAttribution(question) || mentionsOrderDetail(canonical(question));
     }
     public static boolean asksQuantityRegistration(String question) {
         String q = canonical(question);
@@ -49,6 +60,11 @@ public final class EvidenceRequirements {
         return registration && mismatch;
     }
     public static boolean supports(String question, String sourceText) {
+        String q = canonical(question);
+        String source = canonical(sourceText);
+        for (var topic : DETAIL_TOPICS) {
+            if (topic.stream().anyMatch(q::contains) && topic.stream().noneMatch(source::contains)) return false;
+        }
         // A normative corpus plus order progress fields contains no incident investigation dossier.
         if (asksIncidentAttribution(question)) return false;
         // A shared recording verb is not evidence about a quantity discrepancy.
