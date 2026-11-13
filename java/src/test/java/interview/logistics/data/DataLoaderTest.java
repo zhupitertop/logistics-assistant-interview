@@ -29,7 +29,7 @@ class DataLoaderTest {
         var data = loader.load(directory);
         assertThat(data.sops()).hasSize(47);
         assertThat(data.orders().get("HD202611002").orderStatus()).isEqualTo("待审核");
-        assertThat(data.sops().get("IN-01").text()).isEqualTo(tree.get(0).get("text").asText());
+        assertThat(data.sops().get(tree.get(0).get("id").asText()).text()).isEqualTo(tree.get(0).get("text").asText());
         assertThat(data.sourceHashes().get("sop.json")).isEqualTo(JsonFiles.sha256(Files.readAllBytes(directory.resolve("sop.json"))));
         assertThatThrownBy(() -> data.sops().clear()).isInstanceOf(UnsupportedOperationException.class);
         assertThatThrownBy(() -> data.orders().clear()).isInstanceOf(UnsupportedOperationException.class);

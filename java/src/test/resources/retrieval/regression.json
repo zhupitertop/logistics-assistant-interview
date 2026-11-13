@@ -1,0 +1,82 @@
+[
+  {
+    "question": "到货收少了应收件数比实收多记录哪些",
+    "expectedIds": [
+      "IN-01"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "入库收到超过单据数量的货物怎么办",
+    "expectedIds": [
+      "IN-03"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "清库点数发现账实不符初次要写哪些内容",
+    "expectedIds": [
+      "INV-01"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "初盘后由第二个人对同库位复盘吗",
+    "expectedIds": [
+      "INV-04"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "捡货发现货架少于任务要求的数量",
+    "expectedIds": [
+      "OUT-04"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "拣货多拿的商品怎么隔离",
+    "expectedIds": [
+      "OUT-05"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "退货申退数大于实退数如何登记",
+    "expectedIds": [
+      "RET-01"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "退货缺了配件要留照片吗",
+    "expectedIds": [
+      "RET-04"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "运单一直没有新节点要找谁跟进",
+    "expectedIds": [
+      "TRA-03"
+    ],
+    "workflow": "TRANSPORT"
+  },
+  {
+    "question": "交班未结事项要记录哪些信息",
+    "expectedIds": [
+      "HDO-01"
+    ],
+    "workflow": "HANDOVER"
+  },
+  {
+    "question": "国际冷藏包裹最多赔多少钱",
+    "expectedIds": [],
+    "workflow": null
+  },
+  {
+    "question": "拣货和退货都少件先用哪个规范",
+    "expectedIds": [],
+    "workflow": null
+  }
+]

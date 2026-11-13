@@ -1,0 +1,164 @@
+[
+  {
+    "question": "入库收货少件，要记哪些信息",
+    "expectedIds": [
+      "IN-01"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "来货多收了几件，怎么登记",
+    "expectedIds": [
+      "IN-03"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "收货发现商品型号和单据对不上",
+    "expectedIds": [
+      "IN-02"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "入库外箱破损需要保留什么",
+    "expectedIds": [
+      "IN-04"
+    ],
+    "workflow": "INBOUND"
+  },
+  {
+    "question": "盘点时发现账面数比实物多，我要记哪些信息",
+    "expectedIds": [
+      "INV-01"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "盘库有差异，要换人复盘吗",
+    "expectedIds": [
+      "INV-04"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "盘点差异能直接调整库存吗",
+    "expectedIds": [
+      "INV-02"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "盘点期间需要移动货物怎么办",
+    "expectedIds": [
+      "INV-05"
+    ],
+    "workflow": "INVENTORY"
+  },
+  {
+    "question": "出库实拣少件要记录哪些字段",
+    "expectedIds": [
+      "OUT-04",
+      "OUT-03"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "出库拿多了几件怎么办",
+    "expectedIds": [
+      "OUT-05"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "装车复核发现实拣数不一致怎么办",
+    "expectedIds": [
+      "OUT-03"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "拣货应拣数比实拣数多要记录哪些",
+    "expectedIds": [
+      "OUT-04"
+    ],
+    "workflow": "PICKING"
+  },
+  {
+    "question": "退货入库少件需要记录什么",
+    "expectedIds": [
+      "RET-01"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "退多了几件怎么记录",
+    "expectedIds": [
+      "RET-02"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "退回商品与退货单不一致怎么办",
+    "expectedIds": [
+      "RET-03"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "退货缺少配套附件如何记录",
+    "expectedIds": [
+      "RET-04"
+    ],
+    "workflow": "RETURNS"
+  },
+  {
+    "question": "已审核待出库怎么还没发出去能确定原因吗",
+    "expectedIds": [
+      "OUT-02"
+    ],
+    "workflow": "OUTBOUND"
+  },
+  {
+    "question": "待审核订单要核查什么",
+    "expectedIds": [
+      "OUT-01",
+      "ST-03"
+    ],
+    "workflow": "OUTBOUND"
+  },
+  {
+    "question": "物流轨迹不动要核查什么",
+    "expectedIds": [
+      "TRA-03"
+    ],
+    "workflow": "TRANSPORT"
+  },
+  {
+    "question": "运输异常发生阶段怎么判断，缺少物流节点记录怎么办",
+    "expectedIds": [
+      "TRA-02"
+    ],
+    "workflow": "TRANSPORT"
+  },
+  {
+    "question": "跨境冷链破损赔付上限是多少",
+    "expectedIds": [],
+    "workflow": null
+  },
+  {
+    "question": "咖啡机清洁保养流程是什么",
+    "expectedIds": [],
+    "workflow": null
+  },
+  {
+    "question": "入库和盘点差异用哪个流程",
+    "expectedIds": [],
+    "workflow": null
+  },
+  {
+    "question": "少件怎么处理",
+    "expectedIds": [],
+    "workflow": null
+  }
+]

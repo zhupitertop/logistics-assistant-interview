@@ -16,7 +16,7 @@ public final class IndexBuilder {
 
     public static final int SCHEMA_VERSION = 1;
     // Bump when scoring, normalization or workflow/evidence policy changes.
-    public static final String RANKING_VERSION = "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-flow-v2";
+    public static final String RANKING_VERSION = "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-original-flow-v3";
     private final TextAnalyzer analyzer = new TextAnalyzer();
 
     public SopIndex build(DataSnapshot data) {
