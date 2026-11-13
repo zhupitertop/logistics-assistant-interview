@@ -2,10 +2,10 @@
   "schemaVersion" : 1,
   "tokenizerVersion" : "han-bigram-latin-token-v1",
   "rankingConfigVersion" : "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-original-flow-action-v4",
-  "sopSha256" : "878ec870f2109ef0f04240f434c2177dd895ced1da3578ce5d830398273646d1",
+  "sopSha256" : "789e398c256e494a616956b54a74467d35a132e2af1c9ad099f00af966dc410c",
   "synonymsSha256" : "4acaef6d00344e28da713e0bc2b7cf83e8ea1920a8ea8d768833c9086484e62c",
   "documentCount" : 47,
-  "averageDocumentLength" : 44.361702127659576,
+  "averageDocumentLength" : 44.680851063829785,
   "documents" : [ {
     "id" : "HDO-01",
     "titleLength" : 10,
@@ -177,7 +177,7 @@
   }, {
     "id" : "TRA-02",
     "titleLength" : 7,
-    "bodyLength" : 58
+    "bodyLength" : 73
   }, {
     "id" : "TRA-03",
     "titleLength" : 12,
@@ -1061,6 +1061,11 @@
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
+    "先记" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
     "入出" : [ {
       "id" : "OUT-01",
       "titleFrequency" : 0,
@@ -1441,6 +1446,11 @@
     } ],
     "区的" : [ {
       "id" : "STO-04",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "升级" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
@@ -1932,6 +1942,11 @@
     } ],
     "后提" : [ {
       "id" : "RET-05",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "后有" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
@@ -3115,6 +3130,11 @@
       "titleFrequency" : 1,
       "bodyFrequency" : 0
     } ],
+    "常前" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
     "常发" : [ {
       "id" : "TRA-02",
       "titleFrequency" : 0,
@@ -3746,7 +3766,7 @@
     }, {
       "id" : "TRA-02",
       "titleFrequency" : 1,
-      "bodyFrequency" : 1
+      "bodyFrequency" : 2
     }, {
       "id" : "TRA-03",
       "titleFrequency" : 1,
@@ -3881,6 +3901,10 @@
       "bodyFrequency" : 1
     } ],
     "录最" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    }, {
       "id" : "TRA-03",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
@@ -4179,7 +4203,7 @@
     }, {
       "id" : "TRA-02",
       "titleFrequency" : 0,
-      "bodyFrequency" : 1
+      "bodyFrequency" : 2
     }, {
       "id" : "TRA-03",
       "titleFrequency" : 0,
@@ -4449,6 +4473,11 @@
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
+    "描站" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
     "描记" : [ {
       "id" : "TRA-02",
       "titleFrequency" : 0,
@@ -4640,6 +4669,11 @@
     } ],
     "故障" : [ {
       "id" : "HDO-04",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "效扫" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
@@ -4999,6 +5033,10 @@
       "bodyFrequency" : 0
     } ],
     "最后" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    }, {
       "id" : "TRA-03",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
@@ -5025,6 +5063,11 @@
     } ],
     "有库" : [ {
       "id" : "INV-06",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "有效" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
@@ -6532,6 +6575,10 @@
       "bodyFrequency" : 1
     } ],
     "站点" : [ {
+      "id" : "TRA-02",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    }, {
       "id" : "TRA-03",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
@@ -6669,6 +6716,11 @@
       "bodyFrequency" : 1
     }, {
       "id" : "TRA-04",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "级异" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],
@@ -7456,7 +7508,7 @@
     }, {
       "id" : "TRA-02",
       "titleFrequency" : 0,
-      "bodyFrequency" : 2
+      "bodyFrequency" : 3
     }, {
       "id" : "TRA-03",
       "titleFrequency" : 0,
@@ -8411,6 +8463,11 @@
     } ],
     "项遗" : [ {
       "id" : "HDO-05",
+      "titleFrequency" : 0,
+      "bodyFrequency" : 1
+    } ],
+    "须先" : [ {
+      "id" : "TRA-02",
       "titleFrequency" : 0,
       "bodyFrequency" : 1
     } ],

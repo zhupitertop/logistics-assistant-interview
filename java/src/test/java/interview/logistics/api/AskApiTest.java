@@ -126,4 +126,32 @@ class AskApiTest {
         mvc.perform(get("/web/style.css")).andExpect(status().isOk());
     }
 
+    @Test
+    void upstreamOrderIsAvailableWithExactWarehouseAndState() throws Exception {
+        var response = mapper.readTree(request("HD202611005 现在是什么状态"));
+        assertThat(response.get("status").asText()).isEqualTo("answered");
+        assertThat(response.get("answer").asText()).contains("HD202611005", "WH03", "运输异常");
+        assertThat(response.get("citations").size()).isZero();
+        assertThat(response.get("trace").size()).isEqualTo(2);
+        assertThat(response.get("trace").get(0).get("tool").asText()).isEqualTo("order_query");
+    }
+
+    @Test
+    void upstreamTransportClauseIsRetrievedAndQuotedAfterMerge() throws Exception {
+        String addition = "升级异常前，须先记录最后有效扫描站点。";
+        assertThat(data.sops().get("TRA-02").text()).endsWith(addition);
+        var response = mapper.readTree(request("HD202611005 异常升级前需要记录最后有效扫描站点吗"));
+        assertThat(response.get("status").asText()).isEqualTo("answered");
+        assertThat(response.get("answer").asText()).contains(addition, "运输异常", "具体原因待核实");
+        boolean cited = false;
+        for (var citation : response.get("citations")) {
+            if (citation.get("id").asText().equals("TRA-02") && citation.get("excerpt").asText().contains(addition)) cited = true;
+        }
+        assertThat(cited).isTrue();
+        assertThat(response.get("trace").get(0).get("tool").asText()).isEqualTo("order_query");
+        assertThat(response.get("trace").get(1).get("tool").asText()).isEqualTo("sop_search");
+        assertThat(response.get("trace").get(1).get("hit_ids").toString()).contains("TRA-02");
+        assertThat(response.get("trace").get(2).get("hit_ids").toString()).contains("TRA-02");
+    }
+
 }
