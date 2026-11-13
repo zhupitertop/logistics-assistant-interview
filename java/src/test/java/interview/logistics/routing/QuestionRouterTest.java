@@ -39,4 +39,14 @@ class QuestionRouterTest {
             assertThatThrownBy(() -> router.route(q)).isInstanceOf(IllegalArgumentException.class);
         }
     }
+    @Test
+    void contactLocationAndStockRequestsNeedMoreThanProgressFields() {
+        for (String question : new String[]{"HD202611001 收件人电话是多少", "HD202611001 货现在到哪个城市了",
+                "HD202611001 还有库存吗", "HD202611001 当前库存有多少"}) {
+            assertThat(router.route(question).path()).as(question).isEqualTo(ORDER_DIAGNOSIS);
+        }
+        assertThat(router.route("HD202611001 在哪个仓库").path()).isEqualTo(ORDER_STATUS);
+        assertThat(router.route("HD202611001进度到哪了").path()).isEqualTo(ORDER_STATUS);
+    }
+
 }

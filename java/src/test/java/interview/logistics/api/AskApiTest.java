@@ -174,4 +174,20 @@ class AskApiTest {
         assertThat(response.get("answer").asText()).doesNotContain("原因是库存不足", "确定是库存不足");
     }
 
+    @Test
+    void unavailableContactLocationAndStockDetailsCannotBeAnsweredWithStatus() throws Exception {
+        for (String question : List.of("HD202611001 收件人电话是多少", "HD202611001 货现在到哪个城市了",
+                "HD202611001 还有库存吗", "HD202611001 需要知道收件人电话是多少", "HD202611001 当前库存有多少")) {
+            var response = mapper.readTree(request(question));
+            assertThat(response.get("status").asText()).as(question).isEqualTo("insufficient_evidence");
+            assertThat(response.get("answer").asText()).contains("现有数据无法确认", "现有订单字段不包含所需明细");
+            assertThat(response.get("citations").isEmpty()).isTrue();
+            assertThat(response.get("trace").findValuesAsText("tool")).containsExactly("order_query", "generate");
+        }
+        var warehouse = mapper.readTree(request("HD202611001 在哪个仓库"));
+        assertThat(warehouse.get("status").asText()).isEqualTo("answered");
+        assertThat(warehouse.get("answer").asText()).contains("WH01");
+        assertThat(warehouse.get("trace").findValuesAsText("tool")).containsExactly("order_query", "generate");
+    }
+
 }
