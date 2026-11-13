@@ -8,12 +8,6 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 
 public final class IndexBuilder {
-    public static void main(String[] args) {
-        if (args.length != 2) throw new IllegalArgumentException("Expected data directory and index file");
-        var data = new interview.logistics.data.DataLoader().load(java.nio.file.Path.of(args[0]));
-        new IndexStore().rebuild(java.nio.file.Path.of(args[1]), data);
-    }
-
     public static final int SCHEMA_VERSION = 1;
     // Bump when scoring, normalization or workflow/evidence policy changes.
     public static final String RANKING_VERSION = "bm25-log1p-k1-1.2-b-0.75-title2-expansion0.5-original-flow-v3";
