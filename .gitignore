@@ -10,3 +10,9 @@ __pycache__/
 target/
 .idea/
 .vscode/
+
+# Java implementation and development intermediates
+work/
+out/
+*.iml
+*.pid
